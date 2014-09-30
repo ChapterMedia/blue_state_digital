@@ -11,6 +11,8 @@ module BlueStateDigital
       @api_secret = params[:api_secret]
       @client = Faraday.new(:url => "https://#{params[:host]}/") do |faraday|
         faraday.request  :url_encoded             # form-encode POST params
+        faraday.response :xml,  :content_type => /\bxml$/
+        faraday.response :json, :content_type => /\bjson$/
         faraday.response :logger                  # log requests to STDOUT
         faraday.response :raise_error
         faraday.adapter(params[:adapter] || Faraday.default_adapter)  # make requests with Net::HTTP by default

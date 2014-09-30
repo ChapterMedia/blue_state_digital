@@ -1,6 +1,6 @@
 module BlueStateDigital
   class Connection
-    API_VERSION = 1
+    API_VERSION = 2
     API_BASE = '/page/api'
     GRAPH_API_BASE = '/page/graph'
 

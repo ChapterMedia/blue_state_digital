@@ -32,6 +32,7 @@ Gem::Specification.new do |s|
   s.add_dependency "faraday", '>= 0.8.9'
   s.add_dependency "builder"
   s.add_dependency "nokogiri"
+  s.add_dependency "multi_xml"
   s.add_dependency "crack"
   s.add_dependency "hashie"
 end

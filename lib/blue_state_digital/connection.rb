@@ -38,7 +38,6 @@ module BlueStateDigital
         request_options
       end
 
-      params.delete(:timeout)
       if method == "POST" || method == "PUT"
         @client.send(method.downcase.to_sym) do |req|
           content_type = params.delete(:content_type) || 'application/x-www-form-urlencoded'
@@ -50,7 +49,10 @@ module BlueStateDigital
           req.options = request_options if request_options.present?
         end
       else
-        @client.get(path, extended_params(path, params))
+        @client.get do |req|
+          req.url(path, extended_params(path, params))
+          req.options = request_options if request_options.present?
+        end
       end
     end
 

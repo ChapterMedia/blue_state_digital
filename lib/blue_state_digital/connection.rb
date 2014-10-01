@@ -9,6 +9,7 @@ module BlueStateDigital
     def initialize(params = {})
       @api_id = params[:api_id]
       @api_secret = params[:api_secret]
+      @timeout = params[:timeout]
       @client = Faraday.new(:url => "https://#{params[:host]}/") do |faraday|
         faraday.request  :url_encoded             # form-encode POST params
         faraday.response :xml,  :content_type => /\bxml$/
@@ -26,6 +27,18 @@ module BlueStateDigital
 
     def perform_request_raw(call, params = {}, method = "GET", body = nil)
       path = API_BASE + call
+      request_options = {}
+      request_options =
+      case
+      when timeout = params.delete(:timeout)
+        request_options.merge(timeout)
+      when @timeout.present?
+        request_options.merge(@timeout)
+      else
+        request_options
+      end
+
+      params.delete(:timeout)
       if method == "POST" || method == "PUT"
         @client.send(method.downcase.to_sym) do |req|
           content_type = params.delete(:content_type) || 'application/x-www-form-urlencoded'
@@ -34,6 +47,7 @@ module BlueStateDigital
           req.body = body
           req.headers['Content-Type'] = content_type
           req.headers['Accept'] = accept
+          req.options = request_options if request_options.present?
         end
       else
         @client.get(path, extended_params(path, params))
